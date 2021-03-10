@@ -1,0 +1,11 @@
+module.exports={
+    host:"localhost",
+    dialect:'mysql',
+    username:'root',
+    password:'',
+    database:'express_sequlize',
+    define:{
+        timestamps:true,
+        underscored:true,
+    },
+}
