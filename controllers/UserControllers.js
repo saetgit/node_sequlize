@@ -1,6 +1,57 @@
 const db = require("../models/index");
+const bcrypt = require('bcryptjs');
+
+const jwt= require('jsonwebtoken');
+
+const authConfig=require('../config/auth.json');
+function generateToken(params={}){}
 
 module.exports = {
+
+    async login(req, res) {
+        try {
+            const { email, password } = req.body;
+            const islogged = true
+            const user = await db.User.findOne({ where: { email } });
+
+            if (!user) {
+                return res.status(400).send({
+                    status: 0,
+                    message: `Email don't exist in our database!`
+                });
+            }
+
+            if (!bcrypt.compareSync(password, user.password)) {
+                return res.status(400).send({
+                    status: 0,
+                    message: "user not found"
+                });
+            }
+
+            const user_id = user.id;
+            await db.User.update({
+                islogged
+            }, {
+                where: {
+                    id: user_id
+                }
+            });
+            user.password = undefined
+
+            return res.status(200).send({
+                status: 1,
+                success: true,
+                message: "login success",
+                user
+            })
+        } catch (error) {
+            return res.status(500).send({
+                success: false,
+                error,
+                message: "login failed",
+            })
+        }
+    },
     async index(req, res) {
         const user = await db.User.findAll();
 
@@ -12,24 +63,32 @@ module.exports = {
     },
     async store(req, res) {
 
-        const { firstName, lastName, email } = req.body;
+        try {
+            const { name, email, password, islogged } = req.body;
+            const user = await db.User.create({ name, email, password, islogged });
 
-        const user = await db.User.create({ firstName, lastName, email });
-
-        return res.status(200).send({
-            status: 1,
-            message: 'success',
-            user
-        });
+            return res.status(200).send({
+                status: 1,
+                message: 'success',
+                user
+            });
+        } catch (error) {
+            console.log('------------------------>', error);
+            return res.status(500).send({
+                success: false,
+                error,
+                message: "",
+            })
+        }
 
     },
     async update(req, res) {
-        const { firstName, lastName, email } = req.body;
+        const { name, email, password } = req.body;
 
         const { user_id } = req.params;
 
         await db.User.update({
-            firstName, lastName, email
+            name, email, password
         }, {
             where: {
                 id: user_id
