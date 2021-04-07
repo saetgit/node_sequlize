@@ -72,12 +72,12 @@ module.exports = {
         try {
             const { name, email, password, islogged } = req.body;
             const user = await db.User.create({ name, email, password, islogged });
-            // const token=generateToken({id:user.id});
+            const token=generateToken({id:user.id});
 
             return res.status(200).send({
                 status: 1,
                 message: 'success',
-                user
+                user,token
             });
         } catch (error) {
             console.log('------------------------>', error);
