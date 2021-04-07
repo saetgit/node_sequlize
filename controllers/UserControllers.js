@@ -4,7 +4,11 @@ const bcrypt = require('bcryptjs');
 const jwt= require('jsonwebtoken');
 
 const authConfig=require('../config/auth.json');
-function generateToken(params={}){}
+function generateToken(params={}){
+    return jwt.sign(params.authConfig.secret<{
+        expirsIn:78300,
+    });
+}
 
 module.exports = {
 
@@ -38,11 +42,13 @@ module.exports = {
             });
             user.password = undefined
 
+            const token=generateToken({id:user.id});
+
             return res.status(200).send({
                 status: 1,
                 success: true,
                 message: "login success",
-                user
+                user,token
             })
         } catch (error) {
             return res.status(500).send({
@@ -66,6 +72,7 @@ module.exports = {
         try {
             const { name, email, password, islogged } = req.body;
             const user = await db.User.create({ name, email, password, islogged });
+            // const token=generateToken({id:user.id});
 
             return res.status(200).send({
                 status: 1,

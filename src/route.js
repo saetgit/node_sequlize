@@ -2,12 +2,14 @@ const express=require('express');
 
 const UserController=require('../controllers/UserControllers');
 const router=express.Router();
+const authMiddleware=require('../middlewares/auth');
 
 router.get('/',(request,response)=>{
     return response.send("hello world!");
 })
 
-router.get('/users',UserController.index);
+
+router.get('/users',authMiddleware,UserController.index);
 
 router.post('/users',UserController.store);
 
