@@ -1,0 +1,25 @@
+# Dependency directories
+node_modules/
+
+# config directory
+# config/
+# !config/config.js.example
+# !config/multer.js.example
+# !config/passport.js.example
+
+# dotenv environment variables file
+.env
+
+# IDE
+.idea
+.vscode
+
+# Zip Files
+*.zip
+
+# public
+# assets/avatars
+# assets/files
+# assets/images
+# !assets/avatars/user.png
+# !assets/avatars/female-user.png
